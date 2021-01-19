@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reply">
+
+	<insert id="create" parameterType="replyDTO">
+		INSERT INTO reply(rno, bno,
+		content, writer, pw, cdate)
+		VALUES (REPLY_SEQ.NEXTVAL, #{bno},
+		#{content}, #{writer}, #{pw}, SYSDATE)
+	</insert>
+
+	<select id="list" parameterType="Integer" resultType="replyDTO">
+		select *
+		from reply where bno = #{bno}
+	</select>
+
+	<select id="pw" parameterType="replyDTO" resultType="replyDTO">
+		select pw
+		from reply where rno = #{rno}
+	</select>
+
+	<delete id="delete" parameterType="replyDTO" >
+		delete from reply where rno =
+		#{rno}
+	</delete>
+
+</mapper>

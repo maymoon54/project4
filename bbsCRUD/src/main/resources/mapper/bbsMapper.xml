@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs">
+
+	<!--글쓰기 -->
+	<insert id="insert" parameterType="bbsDTO">
+		INSERT INTO bbs(bno, title,
+		content, writer, pw, cdate)
+		VALUES (BBS_SEQ.NEXTVAL, #{title},
+		#{content}, #{writer}, #{pw}, SYSDATE)
+	</insert>
+
+	<!--글수정 -->
+	<update id="update" parameterType="bbsDTO">
+		update bbs set 
+		content = #{content},		
+		title = #{title}
+		where bno = #{bno}
+	</update>
+
+	<!--글삭제 -->
+	<delete id="delete" parameterType="bbsDTO">
+		delete from bbs
+		where bno = #{bno}
+	</delete>
+
+	<!--비밀번호 조회 -->
+	<select id="pwc" parameterType="bbsDTO" resultType="bbsDTO">
+		select pw
+		from bbs where bno = #{bno}
+	</select>
+
+	<!--글상세 조회 -->
+	<select id="one" parameterType="bbsDTO" resultType="bbsDTO">
+		select * from
+		bbs where bno = #{bno}
+	</select>
+
+	<!--조회수 -->
+	<update id="pluscnt" parameterType="bbsDTO">
+		update bbs set cnt = cnt + 1
+		where bno = #{bno}
+	</update>
+
+	<!--글전체목록 -->
+	<select id="list" resultType="bbsDTO">
+		SELECT *
+		FROM (
+		SELECT ROWNUM RN, A.*
+		FROM (
+		SELECT *
+		FROM BBS	
+		ORDER BY BNO DESC
+		) A
+		)
+		WHERE RN BETWEEN #{start}
+		AND #{end}
+	</select>
+
+	<!--글검색 -->
+	<select id="search" parameterType="bbsDTO" resultType="bbsDTO">
+		SELECT *
+		FROM BBS
+		WHERE title LIKE '%' ||  #{keyword} || '%' 
+		OR CONTENT LIKE '%' ||  #{keyword} || '%'
+		ORDER BY BNO DESC
+	</select>
+	
+	<!--총 게시글 갯수 -->
+	<select id="countbbs" resultType="int">
+		select count(bno) from bbs
+	</select>
+
+	<!--리플갯수 -->
+	<select id="countReply" parameterType="bbsDTO" resultType="int">
+		select count(rno) from reply
+		where bno = #{bno}
+	</select>
+
+</mapper>
